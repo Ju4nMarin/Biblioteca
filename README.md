@@ -9,7 +9,7 @@
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-*Una solución moderna y elegante para la gestión de bibliotecas personales*
+*Una solución simmple, moderna y elegante para la gestión de bibliotecas personales*
 
 </div>
 
