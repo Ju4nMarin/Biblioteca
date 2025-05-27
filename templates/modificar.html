@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Libro - BiblioTECa Virtual</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/estilos.css">
+</head>
+<body>
+    <div class="page-content">
+   
+        <div class="modal-overlay" id="editBookModal">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="fas fa-edit"></i>
+                        Modificar Libro
+                    </h2>
+                    <button type="button" class="modal-close" onclick="goBack()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+                
+                    <div class="book-info-card">
+                        <div class="book-info-title">
+                            <i class="fas fa-info-circle"></i>
+                            Información Actual del Libro
+                        </div>
+                        <div class="book-info-details">
+                            <div class="book-info-item">
+                                <span class="book-info-label">ID:</span>
+                                <span>{{ libro.id }}</span>
+                            </div>
+                            <div class="book-info-item">
+                                <span class="book-info-label">Título Actual:</span>
+                                <span>{{ libro.titulo }}</span>
+                            </div>
+                            <div class="book-info-item">
+                                <span class="book-info-label">Autor Actual:</span>
+                                <span>{{ libro.autor }}</span>
+                            </div>
+                            <div class="book-info-item">
+                                <span class="book-info-label">Editorial Actual:</span>
+                                <span>{{ libro.editorial }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+              
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}" role="alert">
+                                    <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" id="editBookForm">
+                        <div class="form-group">
+                            <label for="titulo" class="form-label">
+                                <i class="fas fa-book"></i>
+                                Título del Libro
+                            </label>
+                            <input 
+                                type="text" 
+                                id="titulo" 
+                                name="titulo" 
+                                class="form-control" 
+                                required 
+                                placeholder="Ingresa el título del libro"
+                                maxlength="255"
+                                value="{{ libro.titulo }}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="autor" class="form-label">
+                                <i class="fas fa-user-edit"></i>
+                                Autor
+                            </label>
+                            <input 
+                                type="text" 
+                                id="autor" 
+                                name="autor" 
+                                class="form-control" 
+                                required 
+                                placeholder="Nombre del autor"
+                                maxlength="255"
+                                value="{{ libro.autor }}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editorial" class="form-label">
+                                <i class="fas fa-building"></i>
+                                Editorial
+                            </label>
+                            <input 
+                                type="text" 
+                                id="editorial" 
+                                name="editorial" 
+                                class="form-control" 
+                                required 
+                                placeholder="Nombre de la editorial"
+                                maxlength="255"
+                                value="{{ libro.editorial }}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="numero_paginas" class="form-label">
+                                <i class="fas fa-file-alt"></i>
+                                Número de Páginas
+                            </label>
+                            <input 
+                                type="number" 
+                                id="numero_paginas" 
+                                name="numero_paginas" 
+                                class="form-control" 
+                                required 
+                                min="1" 
+                                max="9999"
+                                placeholder="Ej: 250"
+                                value="{{ libro.numero_paginas }}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edicion" class="form-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Edición/Año
+                            </label>
+                            <input 
+                                type="text" 
+                                id="edicion" 
+                                name="edicion" 
+                                class="form-control" 
+                                required 
+                                placeholder="Ej: 2024, Primera Edición"
+                                maxlength="50"
+                                value="{{ libro.edicion }}"
+                            >
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <i class="fas fa-save"></i>
+                            Actualizar Libro
+                        </button>
+
+                        <a href="/almacenamiento" class="btn-cancel">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function goBack() {
+            window.location.href = '/almacenamiento';
+        }
+
+
+        document.getElementById('editBookForm').addEventListener('submit', function() {
+            const submitBtn = document.getElementById('submitBtn');
+            const originalContent = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<div class="loading-spinner"></div> Actualizando...';
+            submitBtn.disabled = true;
+            
+    
+            setTimeout(() => {
+                submitBtn.innerHTML = originalContent;
+                submitBtn.disabled = false;
+            }, 5000);
+        });
+
+ 
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                goBack();
+            }
+        });
+
+
+        document.querySelector('.modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                goBack();
+            }
+        });
+
+        const originalValues = {
+            titulo: '{{ libro.titulo }}',
+            autor: '{{ libro.autor }}',
+            editorial: '{{ libro.editorial }}',
+            numero_paginas: '{{ libro.numero_paginas }}',
+            edicion: '{{ libro.edicion }}'
+        };
+
+        function checkForChanges() {
+            const currentValues = {
+                titulo: document.getElementById('titulo').value,
+                autor: document.getElementById('autor').value,
+                editorial: document.getElementById('editorial').value,
+                numero_paginas: document.getElementById('numero_paginas').value,
+                edicion: document.getElementById('edicion').value
+            };
+
+            const hasChanges = Object.keys(originalValues).some(key => 
+                originalValues[key] !== currentValues[key]
+            );
+
+            const submitBtn = document.getElementById('submitBtn');
+            if (hasChanges) {
+                submitBtn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+            } else {
+                submitBtn.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Actualizar Libro';
+            }
+        }
+
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', checkForChanges);
+            input.addEventListener('blur', function() {
+                if (this.required && !this.value.trim()) {
+                    this.style.borderColor = '#dc2626';
+                } else {
+                    this.style.borderColor = '#e5e7eb';
+                }
+            });
+        });
+
+        document.getElementById('titulo').focus();
+        document.getElementById('titulo').select();
+
+        checkForChanges();
+    </script>
+</body>
+</html>

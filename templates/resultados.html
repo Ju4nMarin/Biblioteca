@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda - BiblioTECa Virtual</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/estilos.css">
+</head>
+<body>
+    <div class="page-content">
+
+        <div class="modal-overlay" id="searchResultsModal">
+            <div class="modal-container" style="max-width: 900px;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #eb6e25 0%, #d8491d 100%);">
+                    <h2 class="modal-title">
+                        <i class="fas fa-search"></i>
+                        Resultados de Búsqueda
+                    </h2>
+                    <button type="button" class="modal-close" onclick="goBack()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+
+                    <div class="book-info-card" style="background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.2);">
+                        <div class="book-info-title" style="color: #eb9525;">
+                            <i class="fas fa-info-circle"></i>
+                            Información de Búsqueda
+                        </div>
+                        <div class="book-info-details">
+                            <div class="book-info-item">
+                                <span class="book-info-label">Término buscado:</span>
+                                <span style="font-weight: 600; color: #2563eb;">"{{ termino }}"</span>
+                            </div>
+                            <div class="book-info-item">
+                                <span class="book-info-label">Resultados encontrados:</span>
+                                <span style="font-weight: 600; color: #059669;">{{ resultados|length }} libro(s)</span>
+                            </div>
+                            <div class="book-info-item">
+                                <span class="book-info-label">Búsqueda en:</span>
+                                <span>Título, Autor y Editorial</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if resultados %}
+                        <div class="table-container" style="margin-top: 1.5rem;">
+                            <table class="table" role="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Título</th>
+                                        <th scope="col">Autor</th>
+                                        <th scope="col">Editorial</th>
+                                        <th scope="col">Páginas</th>
+                                        <th scope="col">Edición</th>
+                                        <th scope="col">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for libro in resultados %}
+                                    <tr>
+                                        <td><strong>{{ libro.id }}</strong></td>
+                                        <td>
+                                            <strong style="color: var(--primary);">
+                                                {{ libro.titulo | replace(termino, '<mark style="background: #fef3c7; color: #92400e; padding: 2px 4px; border-radius: 3px;">' + termino + '</mark>') | safe }}
+                                            </strong>
+                                        </td>
+                                        <td>
+                                            {{ libro.autor | replace(termino, '<mark style="background: #fef3c7; color: #92400e; padding: 2px 4px; border-radius: 3px;">' + termino + '</mark>') | safe }}
+                                        </td>
+                                        <td>
+                                            {{ libro.editorial | replace(termino, '<mark style="background: #fef3c7; color: #92400e; padding: 2px 4px; border-radius: 3px;">' + termino + '</mark>') | safe }}
+                                        </td>
+                                        <td>{{ libro.numero_paginas }}</td>
+                                        <td>{{ libro.edicion }}</td>
+                                        <td>
+                                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                                <a href="/modificar/{{ libro.id }}" 
+                                                   class="btn btn-primary" 
+                                                   style="padding: 0.5rem 1rem; font-size: 0.875rem;"
+                                                   title="Editar libro">
+                                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                                    Editar
+                                                </a>
+                                                <a href="/eliminar_libro/{{ libro.id }}" 
+                                                   class="btn btn-danger" 
+                                                   style="padding: 0.5rem 1rem; font-size: 0.875rem;"
+                                                   title="Eliminar libro"
+                                                   onclick="return confirm('¿Estás seguro de que deseas eliminar este libro?')">
+                                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                                    Eliminar
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                      
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                            
+                            <a href="/almacenamiento" class="btn" style="background: #6b7280; color: white; flex: 1; min-width: 200px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                <i class="fas fa-books"></i>
+                                Ver Biblioteca Completa
+                            </a>
+                        </div>
+                    {% else %}
+                    
+                        <div style="text-align: center; padding: 3rem 1rem; color: #6b7280;">
+                            <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">
+                                <i class="fas fa-search-minus"></i>
+                            </div>
+                            <h3 style="color: #374151; margin-bottom: 1rem;">No se encontraron resultados</h3>
+                            <p style="margin-bottom: 2rem; line-height: 1.6;">
+                                                                No pudimos encontrar libros que coincidan con <strong>"{{ termino }}"</strong>.
+                                Intenta buscar con un término diferente o revisa la ortografía.
+                            </p>
+
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function goBack() {
+        window.history.back();
+    }
+
+    function performNewSearch() {
+        const searchInput = document.querySelector('input[name="titulo"]');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
+        document.querySelector('form[role="search"]').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            goBack();
+        }
+    });
+    </script>
+</body>
+</html>

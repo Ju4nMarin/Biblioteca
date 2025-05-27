@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioISA - Libroteca Virtual</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/estilos2.css">
+</head>
+<body>
+
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="nav-container">
+            <a href="/" class="logo" aria-label="Ir a la página de inicio">
+                <i class="fas fa-book-open" aria-hidden="true"></i>
+                BiblioISA
+            </a>
+            
+            <ul class="nav-links" role="menubar">
+                <li role="none">
+                    <a href="/" class="nav-link" role="menuitem">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                        Inicio
+                    </a>
+                </li>
+                
+                <li role="none">
+                    <a href="/almacenamiento" class="nav-link active" role="menuitem" aria-current="page">
+                        <i class="fas fa-books" aria-hidden="true"></i>
+                        Mi Biblioteca
+                    </a>
+                </li>
+
+                <li role="none">
+                    <a href="/alta" class="nav-link" role="menuitem">
+                        <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                        Agregar Libro
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-books" aria-hidden="true"></i>
+                Mi Biblioteca
+            </h1>
+            <p class="page-subtitle">Gestiona y organiza todos tus libros</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-triangle{% else %}info-circle{% endif %}" aria-hidden="true"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if libros %}
+            <div class="table-container">
+                <table class="table" role="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Autor</th>
+                            <th scope="col">Editorial</th>
+                            <th scope="col">Páginas</th>
+                            <th scope="col">Edición</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for libro in libros %}
+                        <tr>
+                            <td><strong>{{ libro.id }}</strong></td>
+                            <td>
+                                <strong style="color: var(--primary);">{{ libro.titulo }}</strong>
+                            </td>
+                            <td>{{ libro.autor }}</td>
+                            <td>{{ libro.editorial }}</td>
+                            <td>{{ libro.numero_paginas }}</td>
+                            <td>{{ libro.edicion }}</td>
+                            <td>
+                                <div class="book-actions">
+                                    <a href="/modificar/{{ libro.id }}" class="btn btn-primary" title="Editar libro">
+                                        <i class="fas fa-edit" aria-hidden="true"></i>
+                                        Editar
+                                    </a>
+                                    <a href="/eliminar_libro/{{ libro.id }}" 
+                                       class="btn btn-danger" 
+                                       title="Eliminar libro"
+                                       onclick="return confirm('¿Estás seguro de que deseas eliminar este libro?')">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                        Eliminar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                                                {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-box-open" aria-hidden="true"></i>
+                <p>No hay libros en tu biblioteca. ¡Agrega alguno para comenzar!</p>
+            </div>
+        {% endif %}
+    </main>
+
+</body>
+</html>
