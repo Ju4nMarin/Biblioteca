@@ -14,6 +14,7 @@
 </div>
 
 ## 🎥 Vista Previa de la Aplicación
+![image](https://github.com/user-attachments/assets/b980c042-c66d-4095-875b-2ec7103621e8)
 
 ### 📱 Interfaz Principal
 La página de inicio presenta un dashboard intuitivo con estadísticas en tiempo real y acceso rápido a las funcionalidades principales.
