@@ -38,6 +38,26 @@
                     </a>
                 </li>
             </ul>
+
+             <div class="search-container">
+                <form role="search" aria-label="Buscar libros" action="/buscar" method="POST">
+                    <div style="position: relative;">
+                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                        <input 
+                            type="search" 
+                            class="search-input" 
+                            placeholder="Buscar por título..."
+                            aria-label="Buscar libros por título"
+                            name="titulo"
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <span class="sr-only">Buscar</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </nav>
 
